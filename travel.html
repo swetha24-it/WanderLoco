@@ -1,0 +1,283 @@
+<!--
+  TravelSite - Single-file travel website template
+  * Use this as a starting point. Replace image placeholders with files from your uploaded sample zips (TravelBloom-main.zip or MyTour-main.zip).
+  * Save as index.html and open in a browser. No build step required.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WanderLoco</title>
+  <style>
+    :root{--accent:#0ea5a4;--muted:#6b7280;--card:#ffffff;--bg:#f8fafc}
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui,Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,#06b6d4, #7dd3fc);color:white;padding:18px 24px}
+    .container{max-width:1100px;margin:20px auto;padding:0 18px}
+    nav{display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;letter-spacing:0.4px}
+    .nav-links{display:flex;gap:12px}
+    .nav-links a{color:rgba(255,255,255,0.95);text-decoration:none;padding:8px 10px;border-radius:8px}
+    .nav-links a:hover{background:rgba(255,255,255,0.08)}
+
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:22px;align-items:center;margin-top:22px}
+    .hero-card{background:rgba(255,255,255,0.12);padding:22px;border-radius:12px}
+    .search{display:flex;gap:8px;margin-top:12px}
+    .search input, .search select{flex:1;padding:10px;border-radius:8px;border:none}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border:none;border-radius:8px;cursor:pointer}
+
+    /* Destinations */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+    .card img{width:100%;height:160px;object-fit:cover;display:block}
+    .card-body{padding:12px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tag{background:#eef2ff;padding:6px 8px;border-radius:999px;font-size:13px;color:#3730a3}
+    .muted{color:var(--muted);font-size:14px}
+
+    /* About/Contact */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    footer{margin-top:36px;padding:24px 0;color:var(--muted);text-align:center}
+
+    /* Small screens */
+    @media (max-width:820px){
+      .hero{grid-template-columns:1fr}
+      .two-col{grid-template-columns:1fr}
+      .nav-links{display:none}
+    }
+
+    /* Stylish previous arrow (user requested bold arrow) */
+    .prev-arrow{display:inline-flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;background:#111827;color:white;font-weight:700}
+    .prev-arrow .arrow{font-size:20px;font-weight:900}
+
+    /* small helpers */
+    .center{display:flex;align-items:center;justify-content:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo"><h1>WanderLoco</h1></div>
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#destinations">Destinations</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+
+      <section class="hero" id="home">
+        <div class="hero-card">
+          <h1 style="margin:0 0 8px 0">Find your next escape</h1>
+          <p class="muted">Personalized picks for beaches, temples, and countries — hand-curated suggestions.</p>
+
+          <div class="search">
+            <input id="query" placeholder="Search by place, country or tag (e.g., Goa, temple)" />
+            <select id="filter">
+              <option value="all">All</option>
+              <option value="beach">Beach</option>
+              <option value="temple">Temple</option>
+              <option value="country">Country</option>
+            </select>
+            <button class="btn" onclick="applyFilters()">Search</button>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="tag" onclick="quickPick('beach')">Beaches</button>
+            <button class="tag" onclick="quickPick('temple')">Temples</button>
+            <button class="tag" onclick="quickPick('country')">By Country</button>
+          </div>
+
+          <div style="margin-top:16px;font-size:14px">
+            <span class="prev-arrow"><span class="arrow">←</span> <span>Back</span></span>
+            <!-- You asked for a bold previous arrow instead of the word "previous" — it's implemented above -->
+          </div>
+        </div>
+
+        <aside style="padding:18px;background:rgba(255,255,255,0.06);border-radius:12px;color:white">
+          <h3 style="margin-top:0">Top Picks</h3>
+          <ol style="margin:6px 0 0 18px;color:#e6f8f7">
+            <li>Goa — Calangute Beach</li>
+            <li>Bali — Uluwatu Temple</li>
+            <li>Japan — Kyoto Temples</li>
+          </ol>
+        </aside>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="destinations">
+      <h2 style="margin-top:18px">Destinations</h2>
+      <p class="muted"></p>
+
+      <div class="grid" id="cards">
+        <!-- Example cards: replace image src with your images from uploaded zips -->
+        <article class="card" data-tags="beach,india,goa">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Beach" />
+          <div class="card-body">
+            <strong>Calangute Beach, Goa</strong>
+            <div class="muted">India — Beach</div>
+            <div class="tags"><span class="tag">beach</span><span class="tag">india</span></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="temple,indonesia,bali">
+          <img src="https://images.unsplash.com/photo-1505765055465-6d7b9fbf7a5b?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Temple" />
+          <div class="card-body">
+            <strong>Uluwatu Temple</strong>
+            <div class="muted">Bali, Indonesia — Temple</div>
+            <div class="tags"><span class="tag">temple</span><span class="tag">bali</span></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="beach,thailand,phuket">
+          <img src="https://images.unsplash.com/photo-1493558103817-58b2924bce98?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Beach 2" />
+          <div class="card-body">
+            <strong>Patong Beach</strong>
+            <div class="muted">Phuket, Thailand — Beach</div>
+            <div class="tags"><span class="tag">beach</span><span class="tag">thailand</span></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="temple,japan,kyoto">
+          <img src="https://images.unsplash.com/photo-1558980394-0c3b1b3a6b90?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Temple 2" />
+          <div class="card-body">
+            <strong>Kiyomizu-dera, Kyoto</strong>
+            <div class="muted">Kyoto, Japan — Temple</div>
+            <div class="tags"><span class="tag">temple</span><span class="tag">japan</span></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="country,maldives">
+          <img src="https://images.unsplash.com/photo-1505765055465-6d7b9fbf7a5b?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Country" />
+          <div class="card-body">
+            <strong>Maldives — Island Hopping</strong>
+            <div class="muted">Maldives — Country</div>
+            <div class="tags"><span class="tag">country</span><span class="tag">maldives</span></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="country,nepal">
+          <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&crop=entropy" alt="Country 2" />
+          <div class="card-body">
+            <strong>Kathmandu — Cultural Trails</strong>
+            <div class="muted">Nepal — Country</div>
+            <div class="tags"><span class="tag">country</span><span class="tag">nepal</span></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="recommend" style="margin-top:26px">
+      <h2>Personalized Recommendation</h2>
+      <p class="muted">Tell us a little and we'll pick a suggestion.</p>
+
+      <div class="two-col" style="margin-top:12px">
+        <div style="padding:14px;background:linear-gradient(180deg,#fff,#f3f4f6);border-radius:12px">
+          <label>Preferred vibe:</label>
+          <select id="vibe" style="width:100%;margin-top:8px;padding:8px;border-radius:8px">
+            <option value="relax">Relaxing</option>
+            <option value="adventure">Adventure</option>
+            <option value="culture">Culture</option>
+          </select>
+
+          <label style="display:block;margin-top:12px">Country (optional):</label>
+          <input id="country" placeholder="e.g., India, Japan" style="width:100%;padding:8px;border-radius:8px;margin-top:8px" />
+
+          <button class="btn" style="margin-top:12px" onclick="generateRecommendation()">Get Recommendation</button>
+        </div>
+
+        <div id="recCard" style="padding:14px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#f8fafc)">
+          <strong id="recTitle">Your recommendation will appear here</strong>
+          <p id="recDesc" class="muted">Choose a vibe and optionally a country, then click Get Recommendation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" style="margin-top:26px">
+      <h2>About</h2>
+      <p class="muted">Welcome to WanderLust! 🌏<br>
+
+Your ultimate travel companion! At WanderLust, we curate personalized travel recommendations to help you explore the world. From hidden gems 
+to popular destinations, our expert team provides you with insider tips and tricks to make your travels. <br>
+
+Discover new destinations, plan your dream trip, and get ready for the adventure of a lifetime! 🌟</p>
+    </section>
+
+    <section id="contact" style="margin-top:18px">
+      <h2>Contact</h2>
+      <form onsubmit="event.preventDefault();alert('Message sent (demo)')" style="display:grid;gap:8px;max-width:640px">
+        <input placeholder="Your name" required style="padding:10px;border-radius:8px;border:1px solid #e5e7eb" />
+        <input type="email" placeholder="Email" required style="padding:10px;border-radius:8px;border:1px solid #e5e7eb" />
+        <textarea placeholder="Message" rows="4" style="padding:10px;border-radius:8px;border:1px solid #e5e7eb"></textarea>
+        <button class="btn" type="submit">Send</button>
+      </form>
+    </section>
+
+    
+<footer style="background:#0ea5a4;color:white;padding:20px 10px;margin-top:36px;text-align:center;font-size:15px;line-height:1.6">
+  <div>
+    <strong>Stay connected with:</strong><br>
+    📞: +11 2334 33245 &nbsp; | &nbsp; ⓕ: travel_site &nbsp; | &nbsp; ✉╰┈➤: +11 2334 33245
+  </div>
+  <div style="margin-top:8px;color:#e0f7f6">
+    WanderLoco — Your personalized travel guide to beaches, temples, and countries worldwide. 
+    Explore curated destinations, get insider tips, and make every trip unforgettable.
+  </div>
+</footer>
+
+  </main>
+
+  <script>
+    // Basic client-side filtering and recommendation logic
+    function applyFilters(){
+      const q = document.getElementById('query').value.trim().toLowerCase();
+      const filter = document.getElementById('filter').value;
+      const cards = Array.from(document.querySelectorAll('#cards .card'));
+      cards.forEach(card=>{
+        const tags = card.dataset.tags.toLowerCase();
+        let visible = true;
+        if(filter !== 'all' && !tags.includes(filter)) visible = false;
+        if(q && !tags.includes(q) && !card.textContent.toLowerCase().includes(q)) visible = false;
+        card.style.display = visible ? 'block' : 'none';
+      })
+    }
+
+    function quickPick(tag){
+      document.getElementById('filter').value = tag;
+      applyFilters();
+    }
+
+    function generateRecommendation(){
+      const vibe = document.getElementById('vibe').value;
+      const country = document.getElementById('country').value.trim().toLowerCase();
+      const cards = Array.from(document.querySelectorAll('#cards .card'));
+
+      // Simple scoring: prefer cards matching country, then tags for vibe
+      let candidates = cards.map(card=>{
+        let score = 0;
+        const tags = card.dataset.tags.toLowerCase();
+        if(country && tags.includes(country)) score += 5;
+        if(vibe === 'relax' && tags.includes('beach')) score += 3;
+        if(vibe === 'adventure' && (tags.includes('mountain') || tags.includes('island'))) score += 3;
+        if(vibe === 'culture' && tags.includes('temple')) score += 3;
+        return {card,score}
+      }).sort((a,b)=>b.score-a.score);
+
+      const top = candidates.find(c=>c.score>0) || candidates[0];
+      const title = top.card.querySelector('strong').textContent;
+      const desc = top.card.querySelector('.muted').textContent;
+      document.getElementById('recTitle').textContent = title;
+      document.getElementById('recDesc').textContent = desc + ' — Recommended for: ' + vibe;
+    }
+
+    // Improve accessibility: allow keyboard enter on search input
+    document.getElementById('query').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ applyFilters(); } });
+  </script>
+</body>
+</html>
